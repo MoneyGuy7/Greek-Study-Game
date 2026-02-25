@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ancient Greece Study Site</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+    margin: 0;
+    text-align: center;
+}
+
+h1 { color: #38bdf8; }
+
+button {
+    padding: 12px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.mode-btn { background: #22c55e; color: black; }
+.back-btn { background: #ef4444; color: white; }
+
+.card, .quiz-box {
+    background: #1e293b;
+    padding: 20px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 12px;
+}
+
+.answer { display: none; margin-top: 15px; color: #94a3b8; }
+
+.option {
+    display: block;
+    background: #334155;
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.option:hover { background: #475569; }
+
+.correct { background: #16a34a !important; }
+.wrong { background: #dc2626 !important; }
+</style>
+</head>
+
+<body>
+
+<div id="home">
+<h1>📚 Ancient Greece Study Guide</h1>
+<button class="mode-btn" onclick="startFlashcards()">Flashcard Mode</button>
+<button class="mode-btn" onclick="startQuiz()">Multiple Choice Mode</button>
+</div>
+
+<div id="flashcardMode" style="display:none;">
+<h1>📇 Flashcard Mode</h1>
+<div class="card" onclick="toggleAnswer()">
+<div id="flashQuestion"></div>
+<div id="flashAnswer" class="answer"></div>
+</div>
+<button onclick="nextFlash()">Next</button>
+<button class="back-btn" onclick="goHome()">Back</button>
+</div>
+
+<div id="quizMode" style="display:none;">
+<h1>📝 Multiple Choice Mode</h1>
+<div class="quiz-box">
+<div id="quizQuestion"></div>
+<div id="quizOptions"></div>
+<div id="feedback"></div>
+</div>
+<button onclick="nextQuiz()">Next</button>
+<button class="back-btn" onclick="goHome()">Back</button>
+</div>
+
+<script>
+
+const flashcards = [
+{q:"Difference between Direct and Indirect Democracy?",a:"Direct: Citizens vote on laws themselves. Indirect (Republic): Citizens elect representatives."},
+{q:"Term: Monarchy",a:"Government ruled by a single king or queen."},
+{q:"Term: Oligarchy",a:"Government ruled by a small group of people."},
+{q:"Term: Tyranny",a:"One person seizes power illegally and rules absolutely."},
+{q:"Term: Aristocracy",a:"Government ruled by a small, privileged upper class."},
+{q:"Term: Republic",a:"Citizens elect representatives to govern."},
+{q:"Public open space in Greek city-states?",a:"Agora"},
+{q:"Purpose of the Delian League?",a:"Alliance for defense against Persia."},
+{q:"Student of Socrates and wrote The Republic?",a:"Plato"},
+{q:"Right triangle theorem philosopher?",a:"Pythagoras"},
+{q:"Author of Iliad and Odyssey?",a:"Homer"},
+{q:"Writer of Oedipus Rex?",a:"Sophocles"},
+{q:"King who won Battle of Chaeronea?",a:"Philip II"},
+{q:"Spread Greek culture across Asia?",a:"Alexander the Great"},
+{q:"Greek Bronze Age dates?",a:"3000 BCE - 1100 BCE"},
+{q:"Civilizations of Bronze Age?",a:"Minoan and Mycenaean"},
+{q:"Transition to Classical Period?",a:"Start of Persian Wars"},
+{q:"Classical Period dates?",a:"480 BCE - 323 BCE"},
+{q:"Period after Alexander's death?",a:"Hellenistic Period"},
+{q:"Event ending Hellenistic Period?",a:"Battle of Actium (31 BCE)"},
+{q:"Why did city-states unite in 5th century BCE?",a:"Threat of Persian invasion"},
+{q:"Persian Wars dates?",a:"499 BCE - 449 BCE"},
+{q:"Battle of Marathon year?",a:"490 BCE"},
+{q:"Two battles in 480 BCE?",a:"Thermopylae and Salamis"},
+{q:"Peloponnesian War combatants?",a:"Athens and Sparta"},
+{q:"Outcome of Peloponnesian War?",a:"Sparta defeated Athens"},
+{q:"Doric column capital appearance?",a:"Plain and simple"},
+{q:"Order with scroll-shaped capitals?",a:"Ionic Order"},
+{q:"Most decorative order?",a:"Corinthian Order"},
+{q:"Base of Doric column?",a:"No base; sits directly on ground"},
+{q:"Order used in Parthenon?",a:"Doric Order"}
+];
+
+let flashIndex = 0;
+let quizIndex = 0;
+
+function shuffle(array) {
+for (let i = array.length - 1; i > 0; i--) {
+const j = Math.floor(Math.random() * (i + 1));
+[array[i], array[j]] = [array[j], array[i]];
+}
+}
+
+function startFlashcards(){
+shuffle(flashcards);
+flashIndex = 0;
+document.getElementById("home").style.display="none";
+document.getElementById("flashcardMode").style.display="block";
+showFlash();
+}
+
+function showFlash(){
+document.getElementById("flashQuestion").innerText=flashcards[flashIndex].q;
+document.getElementById("flashAnswer").innerText=flashcards[flashIndex].a;
+document.getElementById("flashAnswer").style.display="none";
+}
+
+function toggleAnswer(){
+let ans=document.getElementById("flashAnswer");
+ans.style.display=ans.style.display==="none"?"block":"none";
+}
+
+function nextFlash(){
+flashIndex=(flashIndex+1)%flashcards.length;
+showFlash();
+}
+
+function startQuiz(){
+shuffle(flashcards);
+quizIndex=0;
+document.getElementById("home").style.display="none";
+document.getElementById("quizMode").style.display="block";
+showQuiz();
+}
+
+function showQuiz(){
+document.getElementById("feedback").innerText="";
+let current=flashcards[quizIndex];
+document.getElementById("quizQuestion").innerText=current.q;
+
+let options=[current.a];
+while(options.length<4){
+let random=flashcards[Math.floor(Math.random()*flashcards.length)].a;
+if(!options.includes(random)) options.push(random);
+}
+shuffle(options);
+
+let optionsDiv=document.getElementById("quizOptions");
+optionsDiv.innerHTML="";
+
+options.forEach(opt=>{
+let btn=document.createElement("div");
+btn.className="option";
+btn.innerText=opt;
+btn.onclick=function(){
+if(opt===current.a){
+btn.classList.add("correct");
+document.getElementById("feedback").innerText="Correct!";
+}else{
+btn.classList.add("wrong");
+document.getElementById("feedback").innerText="Wrong!";
+}
+};
+optionsDiv.appendChild(btn);
+});
+}
+
+function nextQuiz(){
+quizIndex=(quizIndex+1)%flashcards.length;
+showQuiz();
+}
+
+function goHome(){
+document.getElementById("flashcardMode").style.display="none";
+document.getElementById("quizMode").style.display="none";
+document.getElementById("home").style.display="block";
+}
+
+</script>
+</body>
+</html>
