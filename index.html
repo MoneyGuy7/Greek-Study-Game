@@ -3,150 +3,237 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ancient Greece Study Site</title>
+<title>Ancient Greece Mastery</title>
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #0f172a;
-    color: white;
-    margin: 0;
-    text-align: center;
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#0f172a,#1e293b);
+    color:white;
+    text-align:center;
 }
 
-h1 { color: #38bdf8; }
-
-button {
-    padding: 12px 20px;
-    margin: 10px;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
+h1{
+    margin-top:40px;
+    font-size:2.5rem;
+    color:#38bdf8;
 }
 
-.mode-btn { background: #22c55e; color: black; }
-.back-btn { background: #ef4444; color: white; }
-
-.card, .quiz-box {
-    background: #1e293b;
-    padding: 20px;
-    margin: 20px auto;
-    width: 90%;
-    max-width: 600px;
-    border-radius: 12px;
+.container{
+    max-width:700px;
+    margin:auto;
+    padding:20px;
 }
 
-.answer { display: none; margin-top: 15px; color: #94a3b8; }
-
-.option {
-    display: block;
-    background: #334155;
-    margin: 8px 0;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
+.card, .quiz-box{
+    background:#111827;
+    border-radius:16px;
+    padding:30px;
+    margin-top:30px;
+    box-shadow:0 0 25px rgba(0,0,0,0.6);
+    transition:0.3s;
 }
 
-.option:hover { background: #475569; }
+button{
+    padding:12px 20px;
+    margin:10px;
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
+}
 
-.correct { background: #16a34a !important; }
-.wrong { background: #dc2626 !important; }
+button:hover{
+    transform:scale(1.05);
+}
+
+.primary{background:#38bdf8;color:black;}
+.secondary{background:#22c55e;color:black;}
+.danger{background:#ef4444;color:white;}
+.option{
+    background:#1f2937;
+    margin:10px 0;
+    padding:12px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.2s;
+}
+.option:hover{background:#334155;}
+
+.correct{background:#16a34a !important;}
+.wrong{background:#dc2626 !important;}
+
+.answer{
+    display:none;
+    margin-top:20px;
+    color:#94a3b8;
+}
+
+.score{
+    margin-top:15px;
+    font-weight:bold;
+    color:#facc15;
+}
 </style>
 </head>
-
 <body>
 
+<div class="container">
+
 <div id="home">
-<h1>📚 Ancient Greece Study Guide</h1>
-<button class="mode-btn" onclick="startFlashcards()">Flashcard Mode</button>
-<button class="mode-btn" onclick="startQuiz()">Multiple Choice Mode</button>
+<h1>🏛 Ancient Greece Mastery</h1>
+<button class="primary" onclick="startFlash()">Flashcard Mode</button>
+<button class="secondary" onclick="startQuiz()">Hard Quiz Mode</button>
 </div>
 
-<div id="flashcardMode" style="display:none;">
-<h1>📇 Flashcard Mode</h1>
+<div id="flashMode" style="display:none;">
+<h1>📇 Flashcards</h1>
 <div class="card" onclick="toggleAnswer()">
-<div id="flashQuestion"></div>
-<div id="flashAnswer" class="answer"></div>
+<div id="flashQ"></div>
+<div id="flashA" class="answer"></div>
 </div>
-<button onclick="nextFlash()">Next</button>
-<button class="back-btn" onclick="goHome()">Back</button>
+<button class="secondary" onclick="nextFlash()">Next</button>
+<button class="danger" onclick="goHome()">Back</button>
 </div>
 
 <div id="quizMode" style="display:none;">
-<h1>📝 Multiple Choice Mode</h1>
+<h1>📝 Hard Quiz Mode</h1>
 <div class="quiz-box">
-<div id="quizQuestion"></div>
+<div id="quizQ"></div>
 <div id="quizOptions"></div>
 <div id="feedback"></div>
+<div class="score" id="score"></div>
 </div>
-<button onclick="nextQuiz()">Next</button>
-<button class="back-btn" onclick="goHome()">Back</button>
+<button class="secondary" onclick="nextQuiz()">Next</button>
+<button class="danger" onclick="goHome()">Back</button>
+</div>
+
 </div>
 
 <script>
 
-const flashcards = [
-{q:"Difference between Direct and Indirect Democracy?",a:"Direct: Citizens vote on laws themselves. Indirect (Republic): Citizens elect representatives."},
-{q:"Term: Monarchy",a:"Government ruled by a single king or queen."},
-{q:"Term: Oligarchy",a:"Government ruled by a small group of people."},
-{q:"Term: Tyranny",a:"One person seizes power illegally and rules absolutely."},
-{q:"Term: Aristocracy",a:"Government ruled by a small, privileged upper class."},
-{q:"Term: Republic",a:"Citizens elect representatives to govern."},
-{q:"Public open space in Greek city-states?",a:"Agora"},
-{q:"Purpose of the Delian League?",a:"Alliance for defense against Persia."},
-{q:"Student of Socrates and wrote The Republic?",a:"Plato"},
-{q:"Right triangle theorem philosopher?",a:"Pythagoras"},
-{q:"Author of Iliad and Odyssey?",a:"Homer"},
-{q:"Writer of Oedipus Rex?",a:"Sophocles"},
-{q:"King who won Battle of Chaeronea?",a:"Philip II"},
-{q:"Spread Greek culture across Asia?",a:"Alexander the Great"},
-{q:"Greek Bronze Age dates?",a:"3000 BCE - 1100 BCE"},
-{q:"Civilizations of Bronze Age?",a:"Minoan and Mycenaean"},
-{q:"Transition to Classical Period?",a:"Start of Persian Wars"},
-{q:"Classical Period dates?",a:"480 BCE - 323 BCE"},
-{q:"Period after Alexander's death?",a:"Hellenistic Period"},
-{q:"Event ending Hellenistic Period?",a:"Battle of Actium (31 BCE)"},
-{q:"Why did city-states unite in 5th century BCE?",a:"Threat of Persian invasion"},
-{q:"Persian Wars dates?",a:"499 BCE - 449 BCE"},
-{q:"Battle of Marathon year?",a:"490 BCE"},
-{q:"Two battles in 480 BCE?",a:"Thermopylae and Salamis"},
-{q:"Peloponnesian War combatants?",a:"Athens and Sparta"},
-{q:"Outcome of Peloponnesian War?",a:"Sparta defeated Athens"},
-{q:"Doric column capital appearance?",a:"Plain and simple"},
-{q:"Order with scroll-shaped capitals?",a:"Ionic Order"},
-{q:"Most decorative order?",a:"Corinthian Order"},
-{q:"Base of Doric column?",a:"No base; sits directly on ground"},
-{q:"Order used in Parthenon?",a:"Doric Order"}
+const questions = [
+
+{
+q:"In what year did the Battle of Marathon take place?",
+a:"490 BCE",
+options:["490 BCE","480 BCE","499 BCE","431 BCE"]
+},
+
+{
+q:"What are the dates of the Persian Wars?",
+a:"499 BCE - 449 BCE",
+options:["499 BCE - 449 BCE","480 BCE - 323 BCE","431 BCE - 404 BCE","3000 BCE - 1100 BCE"]
+},
+
+{
+q:"Which two battles occurred in 480 BCE?",
+a:"Thermopylae and Salamis",
+options:["Thermopylae and Salamis","Marathon and Plataea","Chaeronea and Marathon","Actium and Salamis"]
+},
+
+{
+q:"Who defeated the Greek city-states at the Battle of Chaeronea?",
+a:"Philip II",
+options:["Philip II","Alexander the Great","Darius I","Pericles"]
+},
+
+{
+q:"Which philosopher developed a theorem about right triangles?",
+a:"Pythagoras",
+options:["Pythagoras","Plato","Aristotle","Socrates"]
+},
+
+{
+q:"Who wrote Oedipus Rex?",
+a:"Sophocles",
+options:["Sophocles","Homer","Euripides","Aeschylus"]
+},
+
+{
+q:"Which government is ruled by a small group of powerful individuals?",
+a:"Oligarchy",
+options:["Oligarchy","Monarchy","Republic","Tyranny"]
+},
+
+{
+q:"Which architectural order has scroll-shaped capitals?",
+a:"Ionic Order",
+options:["Ionic Order","Doric Order","Corinthian Order","Tuscan Order"]
+},
+
+{
+q:"Which order is the most decorative?",
+a:"Corinthian Order",
+options:["Corinthian Order","Doric Order","Ionic Order","Composite Order"]
+},
+
+{
+q:"Which historical period followed the death of Alexander the Great?",
+a:"Hellenistic Period",
+options:["Hellenistic Period","Classical Period","Archaic Period","Bronze Age"]
+},
+
+{
+q:"What ended the Hellenistic Period in 31 BCE?",
+a:"Battle of Actium",
+options:["Battle of Actium","Battle of Marathon","Battle of Salamis","Peloponnesian War"]
+},
+
+{
+q:"Who were the main combatants in the Peloponnesian War?",
+a:"Athens and Sparta",
+options:["Athens and Sparta","Athens and Persia","Sparta and Macedonia","Rome and Greece"]
+},
+
+{
+q:"What was the outcome of the Peloponnesian War?",
+a:"Sparta defeated Athens",
+options:["Sparta defeated Athens","Athens defeated Sparta","Persia conquered Greece","Rome conquered Greece"]
+}
+
 ];
 
-let flashIndex = 0;
-let quizIndex = 0;
+const flashcards = [
+{q:"Define Monarchy",a:"Government ruled by a king or queen."},
+{q:"Define Tyranny",a:"One person seizes power illegally and rules absolutely."},
+{q:"Define Republic",a:"Citizens elect representatives to govern."},
+{q:"What was the purpose of the Delian League?",a:"Alliance for mutual defense against Persia."},
+{q:"What was the Agora?",a:"Public open space for assemblies and markets."},
+{q:"Dates of the Greek Bronze Age?",a:"3000 BCE - 1100 BCE"},
+{q:"Civilizations of Bronze Age?",a:"Minoan and Mycenaean"}
+];
 
-function shuffle(array) {
-for (let i = array.length - 1; i > 0; i--) {
-const j = Math.floor(Math.random() * (i + 1));
-[array[i], array[j]] = [array[j], array[i]];
+let flashIndex=0;
+let quizIndex=0;
+let score=0;
+
+function shuffle(arr){
+for(let i=arr.length-1;i>0;i--){
+let j=Math.floor(Math.random()*(i+1));
+[arr[i],arr[j]]=[arr[j],arr[i]];
 }
 }
 
-function startFlashcards(){
+function startFlash(){
 shuffle(flashcards);
-flashIndex = 0;
+flashIndex=0;
 document.getElementById("home").style.display="none";
-document.getElementById("flashcardMode").style.display="block";
+document.getElementById("flashMode").style.display="block";
 showFlash();
 }
 
 function showFlash(){
-document.getElementById("flashQuestion").innerText=flashcards[flashIndex].q;
-document.getElementById("flashAnswer").innerText=flashcards[flashIndex].a;
-document.getElementById("flashAnswer").style.display="none";
+document.getElementById("flashQ").innerText=flashcards[flashIndex].q;
+document.getElementById("flashA").innerText=flashcards[flashIndex].a;
+document.getElementById("flashA").style.display="none";
 }
 
 function toggleAnswer(){
-let ans=document.getElementById("flashAnswer");
-ans.style.display=ans.style.display==="none"?"block":"none";
+let a=document.getElementById("flashA");
+a.style.display=a.style.display==="none"?"block":"none";
 }
 
 function nextFlash(){
@@ -155,8 +242,9 @@ showFlash();
 }
 
 function startQuiz(){
-shuffle(flashcards);
+shuffle(questions);
 quizIndex=0;
+score=0;
 document.getElementById("home").style.display="none";
 document.getElementById("quizMode").style.display="block";
 showQuiz();
@@ -164,43 +252,47 @@ showQuiz();
 
 function showQuiz(){
 document.getElementById("feedback").innerText="";
-let current=flashcards[quizIndex];
-document.getElementById("quizQuestion").innerText=current.q;
+document.getElementById("score").innerText="Score: "+score+"/"+questions.length;
 
-let options=[current.a];
-while(options.length<4){
-let random=flashcards[Math.floor(Math.random()*flashcards.length)].a;
-if(!options.includes(random)) options.push(random);
-}
-shuffle(options);
+let current=questions[quizIndex];
+document.getElementById("quizQ").innerText=current.q;
 
 let optionsDiv=document.getElementById("quizOptions");
 optionsDiv.innerHTML="";
 
-options.forEach(opt=>{
+current.options.sort(()=>Math.random()-0.5);
+
+current.options.forEach(opt=>{
 let btn=document.createElement("div");
 btn.className="option";
 btn.innerText=opt;
 btn.onclick=function(){
 if(opt===current.a){
 btn.classList.add("correct");
+score++;
 document.getElementById("feedback").innerText="Correct!";
 }else{
 btn.classList.add("wrong");
-document.getElementById("feedback").innerText="Wrong!";
+document.getElementById("feedback").innerText="Incorrect.";
 }
+document.getElementById("score").innerText="Score: "+score+"/"+questions.length;
 };
 optionsDiv.appendChild(btn);
 });
 }
 
 function nextQuiz(){
-quizIndex=(quizIndex+1)%flashcards.length;
+quizIndex++;
+if(quizIndex>=questions.length){
+alert("Quiz Finished! Final Score: "+score+"/"+questions.length);
+goHome();
+return;
+}
 showQuiz();
 }
 
 function goHome(){
-document.getElementById("flashcardMode").style.display="none";
+document.getElementById("flashMode").style.display="none";
 document.getElementById("quizMode").style.display="none";
 document.getElementById("home").style.display="block";
 }
