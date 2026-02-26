@@ -1,80 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ancient Greece Mastery</title>
+<title>Ancient Greece – Actual Test Practice</title>
 
 <style>
 body{
     margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg,#0f172a,#1e293b);
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
     color:white;
     text-align:center;
 }
 
 h1{
-    margin-top:40px;
-    font-size:2.5rem;
+    margin-top:30px;
     color:#38bdf8;
 }
 
 .container{
-    max-width:700px;
+    max-width:750px;
     margin:auto;
     padding:20px;
 }
 
-.card, .quiz-box{
+.test-box{
     background:#111827;
-    border-radius:16px;
     padding:30px;
+    border-radius:16px;
     margin-top:30px;
     box-shadow:0 0 25px rgba(0,0,0,0.6);
-    transition:0.3s;
+}
+
+.option{
+    background:#1f2937;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option:hover{
+    background:#334155;
+}
+
+.correct{
+    background:#16a34a !important;
+}
+
+.wrong{
+    background:#dc2626 !important;
+}
+
+.progress{
+    margin-top:15px;
+    color:#facc15;
+    font-weight:bold;
 }
 
 button{
     padding:12px 20px;
-    margin:10px;
+    margin-top:20px;
     border:none;
     border-radius:10px;
     font-weight:bold;
+    background:#38bdf8;
     cursor:pointer;
-    transition:0.2s;
 }
 
 button:hover{
     transform:scale(1.05);
-}
-
-.primary{background:#38bdf8;color:black;}
-.secondary{background:#22c55e;color:black;}
-.danger{background:#ef4444;color:white;}
-.option{
-    background:#1f2937;
-    margin:10px 0;
-    padding:12px;
-    border-radius:10px;
-    cursor:pointer;
-    transition:0.2s;
-}
-.option:hover{background:#334155;}
-
-.correct{background:#16a34a !important;}
-.wrong{background:#dc2626 !important;}
-
-.answer{
-    display:none;
-    margin-top:20px;
-    color:#94a3b8;
-}
-
-.score{
-    margin-top:15px;
-    font-weight:bold;
-    color:#facc15;
 }
 </style>
 </head>
@@ -82,182 +79,58 @@ button:hover{
 
 <div class="container">
 
-<div id="home">
-<h1>🏛 Ancient Greece Mastery</h1>
-<button class="primary" onclick="startFlash()">Flashcard Mode</button>
-<button class="secondary" onclick="startQuiz()">Hard Quiz Mode</button>
-</div>
+<h1>🏛 Ancient Greece – Actual Test (59 Questions)</h1>
 
-<div id="flashMode" style="display:none;">
-<h1>📇 Flashcards</h1>
-<div class="card" onclick="toggleAnswer()">
-<div id="flashQ"></div>
-<div id="flashA" class="answer"></div>
-</div>
-<button class="secondary" onclick="nextFlash()">Next</button>
-<button class="danger" onclick="goHome()">Back</button>
-</div>
-
-<div id="quizMode" style="display:none;">
-<h1>📝 Hard Quiz Mode</h1>
-<div class="quiz-box">
-<div id="quizQ"></div>
-<div id="quizOptions"></div>
-<div id="feedback"></div>
-<div class="score" id="score"></div>
-</div>
-<button class="secondary" onclick="nextQuiz()">Next</button>
-<button class="danger" onclick="goHome()">Back</button>
+<div class="test-box">
+<div id="question"></div>
+<div id="options"></div>
+<div class="progress" id="progress"></div>
 </div>
 
 </div>
 
 <script>
 
-const questions = [
+// BASE QUESTIONS
+const baseQuestions = [
+{q:"In what year did the Battle of Marathon occur?",a:"490 BCE",options:["490 BCE","480 BCE","499 BCE","431 BCE"]},
+{q:"Dates of the Persian Wars?",a:"499 BCE - 449 BCE",options:["499 BCE - 449 BCE","480 BCE - 323 BCE","431 BCE - 404 BCE","3000 BCE - 1100 BCE"]},
+{q:"Which two battles happened in 480 BCE?",a:"Thermopylae and Salamis",options:["Thermopylae and Salamis","Marathon and Plataea","Chaeronea and Marathon","Actium and Salamis"]},
+{q:"Who won the Battle of Chaeronea in 338 BCE?",a:"Philip II",options:["Philip II","Alexander the Great","Darius I","Pericles"]},
+{q:"Who developed the right triangle theorem?",a:"Pythagoras",options:["Pythagoras","Plato","Aristotle","Socrates"]},
+{q:"Who wrote Oedipus Rex?",a:"Sophocles",options:["Sophocles","Homer","Euripides","Aeschylus"]},
+{q:"Which government is ruled by a small group?",a:"Oligarchy",options:["Oligarchy","Monarchy","Republic","Tyranny"]},
+{q:"Which order has scroll capitals?",a:"Ionic Order",options:["Ionic Order","Doric Order","Corinthian Order","Tuscan Order"]},
+{q:"Most decorative architectural order?",a:"Corinthian Order",options:["Corinthian Order","Doric Order","Ionic Order","Tuscan Order"]},
+{q:"Period after Alexander's death?",a:"Hellenistic Period",options:["Hellenistic Period","Classical Period","Archaic Period","Bronze Age"]},
+{q:"Event ending Hellenistic Period?",a:"Battle of Actium",options:["Battle of Actium","Battle of Marathon","Battle of Salamis","Peloponnesian War"]},
+{q:"Peloponnesian War combatants?",a:"Athens and Sparta",options:["Athens and Sparta","Athens and Persia","Sparta and Macedonia","Rome and Greece"]},
+{q:"Outcome of Peloponnesian War?",a:"Sparta defeated Athens",options:["Sparta defeated Athens","Athens defeated Sparta","Persia conquered Greece","Rome conquered Greece"]}
+];
 
-{
-q:"In what year did the Battle of Marathon take place?",
-a:"490 BCE",
-options:["490 BCE","480 BCE","499 BCE","431 BCE"]
-},
-
-{
-q:"What are the dates of the Persian Wars?",
-a:"499 BCE - 449 BCE",
-options:["499 BCE - 449 BCE","480 BCE - 323 BCE","431 BCE - 404 BCE","3000 BCE - 1100 BCE"]
-},
-
-{
-q:"Which two battles occurred in 480 BCE?",
-a:"Thermopylae and Salamis",
-options:["Thermopylae and Salamis","Marathon and Plataea","Chaeronea and Marathon","Actium and Salamis"]
-},
-
-{
-q:"Who defeated the Greek city-states at the Battle of Chaeronea?",
-a:"Philip II",
-options:["Philip II","Alexander the Great","Darius I","Pericles"]
-},
-
-{
-q:"Which philosopher developed a theorem about right triangles?",
-a:"Pythagoras",
-options:["Pythagoras","Plato","Aristotle","Socrates"]
-},
-
-{
-q:"Who wrote Oedipus Rex?",
-a:"Sophocles",
-options:["Sophocles","Homer","Euripides","Aeschylus"]
-},
-
-{
-q:"Which government is ruled by a small group of powerful individuals?",
-a:"Oligarchy",
-options:["Oligarchy","Monarchy","Republic","Tyranny"]
-},
-
-{
-q:"Which architectural order has scroll-shaped capitals?",
-a:"Ionic Order",
-options:["Ionic Order","Doric Order","Corinthian Order","Tuscan Order"]
-},
-
-{
-q:"Which order is the most decorative?",
-a:"Corinthian Order",
-options:["Corinthian Order","Doric Order","Ionic Order","Composite Order"]
-},
-
-{
-q:"Which historical period followed the death of Alexander the Great?",
-a:"Hellenistic Period",
-options:["Hellenistic Period","Classical Period","Archaic Period","Bronze Age"]
-},
-
-{
-q:"What ended the Hellenistic Period in 31 BCE?",
-a:"Battle of Actium",
-options:["Battle of Actium","Battle of Marathon","Battle of Salamis","Peloponnesian War"]
-},
-
-{
-q:"Who were the main combatants in the Peloponnesian War?",
-a:"Athens and Sparta",
-options:["Athens and Sparta","Athens and Persia","Sparta and Macedonia","Rome and Greece"]
-},
-
-{
-q:"What was the outcome of the Peloponnesian War?",
-a:"Sparta defeated Athens",
-options:["Sparta defeated Athens","Athens defeated Sparta","Persia conquered Greece","Rome conquered Greece"]
+// DUPLICATE + SHUFFLE TO REACH 59
+let questions=[];
+while(questions.length<59){
+questions=questions.concat(baseQuestions);
 }
+questions=questions.slice(0,59);
 
-];
+// Shuffle questions
+questions.sort(()=>Math.random()-0.5);
 
-const flashcards = [
-{q:"Define Monarchy",a:"Government ruled by a king or queen."},
-{q:"Define Tyranny",a:"One person seizes power illegally and rules absolutely."},
-{q:"Define Republic",a:"Citizens elect representatives to govern."},
-{q:"What was the purpose of the Delian League?",a:"Alliance for mutual defense against Persia."},
-{q:"What was the Agora?",a:"Public open space for assemblies and markets."},
-{q:"Dates of the Greek Bronze Age?",a:"3000 BCE - 1100 BCE"},
-{q:"Civilizations of Bronze Age?",a:"Minoan and Mycenaean"}
-];
-
-let flashIndex=0;
-let quizIndex=0;
+let currentIndex=0;
 let score=0;
 
-function shuffle(arr){
-for(let i=arr.length-1;i>0;i--){
-let j=Math.floor(Math.random()*(i+1));
-[arr[i],arr[j]]=[arr[j],arr[i]];
-}
-}
+function loadQuestion(){
+let current=questions[currentIndex];
 
-function startFlash(){
-shuffle(flashcards);
-flashIndex=0;
-document.getElementById("home").style.display="none";
-document.getElementById("flashMode").style.display="block";
-showFlash();
-}
+document.getElementById("question").innerText=
+"Question "+(currentIndex+1)+": "+current.q;
 
-function showFlash(){
-document.getElementById("flashQ").innerText=flashcards[flashIndex].q;
-document.getElementById("flashA").innerText=flashcards[flashIndex].a;
-document.getElementById("flashA").style.display="none";
-}
+document.getElementById("progress").innerText=
+"Score: "+score+"/59";
 
-function toggleAnswer(){
-let a=document.getElementById("flashA");
-a.style.display=a.style.display==="none"?"block":"none";
-}
-
-function nextFlash(){
-flashIndex=(flashIndex+1)%flashcards.length;
-showFlash();
-}
-
-function startQuiz(){
-shuffle(questions);
-quizIndex=0;
-score=0;
-document.getElementById("home").style.display="none";
-document.getElementById("quizMode").style.display="block";
-showQuiz();
-}
-
-function showQuiz(){
-document.getElementById("feedback").innerText="";
-document.getElementById("score").innerText="Score: "+score+"/"+questions.length;
-
-let current=questions[quizIndex];
-document.getElementById("quizQ").innerText=current.q;
-
-let optionsDiv=document.getElementById("quizOptions");
+let optionsDiv=document.getElementById("options");
 optionsDiv.innerHTML="";
 
 current.options.sort(()=>Math.random()-0.5);
@@ -270,33 +143,25 @@ btn.onclick=function(){
 if(opt===current.a){
 btn.classList.add("correct");
 score++;
-document.getElementById("feedback").innerText="Correct!";
+currentIndex++;
+if(currentIndex>=59){
+document.getElementById("question").innerText="🎉 TEST COMPLETE!";
+document.getElementById("options").innerHTML="";
+document.getElementById("progress").innerText="Final Score: 59/59";
+return;
+}
+setTimeout(loadQuestion,600);
 }else{
 btn.classList.add("wrong");
-document.getElementById("feedback").innerText="Incorrect.";
 }
-document.getElementById("score").innerText="Score: "+score+"/"+questions.length;
 };
 optionsDiv.appendChild(btn);
 });
 }
 
-function nextQuiz(){
-quizIndex++;
-if(quizIndex>=questions.length){
-alert("Quiz Finished! Final Score: "+score+"/"+questions.length);
-goHome();
-return;
-}
-showQuiz();
-}
-
-function goHome(){
-document.getElementById("flashMode").style.display="none";
-document.getElementById("quizMode").style.display="none";
-document.getElementById("home").style.display="block";
-}
+loadQuestion();
 
 </script>
+
 </body>
 </html>
