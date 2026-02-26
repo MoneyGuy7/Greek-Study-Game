@@ -16,7 +16,7 @@ text-align:center;
 
 h1{margin-top:40px;color:#38bdf8;}
 
-.container{max-width:900px;margin:auto;padding:20px;}
+.container{max-width:950px;margin:auto;padding:20px;}
 
 .box{
 background:#111827;
@@ -71,10 +71,15 @@ transition:0.2s;
 
 <div id="categoryMenu" style="display:none;">
 <h2>Select Study Category</h2>
-<button class="primary" onclick="startHardQuiz('government')">Government</button>
-<button class="primary" onclick="startHardQuiz('wars')">Wars</button>
-<button class="primary" onclick="startHardQuiz('philosophy')">Philosophy & Literature</button>
+
+<button class="primary" onclick="startHardQuiz('government')">Government Systems</button>
+<button class="primary" onclick="startHardQuiz('wars')">Greek Wars</button>
+<button class="primary" onclick="startHardQuiz('philosophy')">Philosophy</button>
+<button class="primary" onclick="startHardQuiz('literature')">Literature & Drama</button>
 <button class="primary" onclick="startHardQuiz('architecture')">Architecture</button>
+<button class="primary" onclick="startHardQuiz('periods')">Historical Periods</button>
+<button class="primary" onclick="startHardQuiz('leaders')">Key Leaders</button>
+
 <br>
 <button class="danger" onclick="goHome()">Back</button>
 </div>
@@ -102,50 +107,86 @@ const flashcards=[
 {q:"Define Tyranny",a:"One person seizes power illegally"},
 {q:"Define Republic",a:"Citizens elect representatives"},
 {q:"What was the Agora?",a:"Public marketplace and meeting space"},
-{q:"Purpose of the Delian League?",a:"Alliance for defense against Persia"}
+{q:"Purpose of the Delian League?",a:"Alliance for defense against Persia"},
+{q:"Greek Bronze Age dates?",a:"3000 BCE - 1100 BCE"},
+{q:"Classical Period dates?",a:"480 BCE - 323 BCE"}
 ];
 
 /* =========================
    HARD QUIZ CATEGORIES
 ========================= */
-const hardCategories={
+
+const hardCategories = {
+
 government:[
-{q:"What is Direct Democracy?",a:"Citizens vote directly on laws",options:["Citizens vote directly on laws","Citizens elect representatives","Rule by king","Rule by generals"]},
-{q:"Define Oligarchy",a:"Rule by a small group",options:["Rule by a small group","Rule by king","Rule by citizens","Rule by army"]},
-{q:"Define Republic",a:"Citizens elect representatives",options:["Citizens elect representatives","Direct voting only","Rule by nobles","Rule by tyrant"]}
+{q:"What is Direct Democracy?",a:"Citizens vote directly on laws",options:["Citizens vote directly on laws","Citizens elect representatives","Rule by king","Rule by nobles"]},
+{q:"Define Oligarchy",a:"Rule by a small group",options:["Rule by a small group","Rule by citizens","Rule by king","Military rule"]},
+{q:"Define Aristocracy",a:"Rule by privileged upper class",options:["Rule by privileged upper class","Rule by king","Rule by army","Rule by citizens"]},
+{q:"Define Tyranny",a:"One person seizes power illegally",options:["One person seizes power illegally","Elected leader","Group vote","Noble council"]},
+{q:"Define Republic",a:"Citizens elect representatives",options:["Citizens elect representatives","Direct vote only","Rule by tyrant","Rule by nobles"]}
 ],
 
 wars:[
 {q:"Year of Marathon?",a:"490 BCE",options:["490 BCE","480 BCE","499 BCE","431 BCE"]},
 {q:"Dates of Persian Wars?",a:"499 BCE - 449 BCE",options:["499 BCE - 449 BCE","480 BCE - 323 BCE","431 BCE - 404 BCE","338 BCE - 31 BCE"]},
-{q:"Peloponnesian War sides?",a:"Athens and Sparta",options:["Athens and Sparta","Athens and Persia","Sparta and Rome","Rome and Greece"]}
+{q:"Battles in 480 BCE?",a:"Thermopylae and Salamis",options:["Thermopylae and Salamis","Marathon and Plataea","Chaeronea and Marathon","Actium and Salamis"]},
+{q:"Peloponnesian War combatants?",a:"Athens and Sparta",options:["Athens and Sparta","Athens and Persia","Rome and Sparta","Sparta and Egypt"]},
+{q:"Outcome of Peloponnesian War?",a:"Sparta defeated Athens",options:["Sparta defeated Athens","Athens won","Persia won","Rome conquered Greece"]}
 ],
 
 philosophy:[
 {q:"Who wrote The Republic?",a:"Plato",options:["Plato","Aristotle","Socrates","Pythagoras"]},
-{q:"Who created the right triangle theorem?",a:"Pythagoras",options:["Pythagoras","Plato","Homer","Sophocles"]},
-{q:"Who wrote The Iliad and The Odyssey?",a:"Homer",options:["Homer","Sophocles","Plato","Herodotus"]}
+{q:"Who was the teacher of Plato?",a:"Socrates",options:["Socrates","Aristotle","Homer","Pericles"]},
+{q:"Who was Plato’s famous student?",a:"Aristotle",options:["Aristotle","Pythagoras","Homer","Sophocles"]},
+{q:"Who created the right triangle theorem?",a:"Pythagoras",options:["Pythagoras","Plato","Homer","Socrates"]},
+{q:"Who emphasized logic and scientific observation?",a:"Aristotle",options:["Aristotle","Plato","Homer","Leonidas"]}
+],
+
+literature:[
+{q:"Who wrote The Iliad and The Odyssey?",a:"Homer",options:["Homer","Sophocles","Plato","Herodotus"]},
+{q:"Who wrote Oedipus Rex?",a:"Sophocles",options:["Sophocles","Homer","Euripides","Aristotle"]},
+{q:"Greek plays were often performed in what type of structure?",a:"Amphitheater",options:["Amphitheater","Temple","Agora","Palace"]},
+{q:"Greek tragedies focused on what theme?",a:"Human suffering and fate",options:["Human suffering and fate","Comedy only","Science","Politics only"]},
+{q:"Epic poems often told stories about?",a:"Heroes and gods",options:["Heroes and gods","Farmers","Trade","Architecture"]}
 ],
 
 architecture:[
-{q:"Which order has scroll capitals?",a:"Ionic Order",options:["Ionic Order","Doric Order","Corinthian Order","Composite"]},
-{q:"Most decorative order?",a:"Corinthian Order",options:["Corinthian Order","Doric Order","Ionic Order","Tuscan"]},
-{q:"Doric columns have what base?",a:"No base",options:["No base","Round base","Square base","Decorated base"]}
+{q:"Which order has scroll capitals?",a:"Ionic Order",options:["Ionic Order","Doric Order","Corinthian Order","Tuscan"]},
+{q:"Most decorative order?",a:"Corinthian Order",options:["Corinthian Order","Doric Order","Ionic Order","Composite"]},
+{q:"Doric capital style?",a:"Plain and simple",options:["Plain and simple","Leaf carved","Scroll shaped","Gold plated"]},
+{q:"Doric column base?",a:"No base",options:["No base","Round base","Square base","Decorated base"]},
+{q:"Parthenon used which order?",a:"Doric Order",options:["Doric Order","Ionic Order","Corinthian Order","Composite"]}
+],
+
+periods:[
+{q:"Greek Bronze Age dates?",a:"3000 BCE - 1100 BCE",options:["3000 BCE - 1100 BCE","500 BCE - 323 BCE","800 BCE - 480 BCE","1200 BCE - 500 BCE"]},
+{q:"Civilizations of Bronze Age?",a:"Minoan and Mycenaean",options:["Minoan and Mycenaean","Athens and Sparta","Rome and Carthage","Persia and Egypt"]},
+{q:"Start of Classical Period?",a:"Persian Wars",options:["Persian Wars","Peloponnesian War","Battle of Actium","Roman conquest"]},
+{q:"Classical Period dates?",a:"480 BCE - 323 BCE",options:["480 BCE - 323 BCE","3000 BCE - 1100 BCE","431 BCE - 404 BCE","31 BCE - 200 CE"]},
+{q:"Period after Alexander’s death?",a:"Hellenistic Period",options:["Hellenistic Period","Archaic Period","Bronze Age","Roman Period"]}
+],
+
+leaders:[
+{q:"Who won Battle of Chaeronea?",a:"Philip II",options:["Philip II","Alexander","Darius","Leonidas"]},
+{q:"Who spread Greek culture across Asia?",a:"Alexander the Great",options:["Alexander the Great","Philip II","Pericles","Xerxes"]},
+{q:"Who was king of Sparta at Thermopylae?",a:"Leonidas",options:["Leonidas","Pericles","Philip II","Socrates"]},
+{q:"Persian king during Persian Wars?",a:"Darius I",options:["Darius I","Alexander","Philip II","Homer"]},
+{q:"Who led Athens during its Golden Age?",a:"Pericles",options:["Pericles","Leonidas","Philip II","Aristotle"]}
 ]
+
 };
 
 /* =========================
-   ACTUAL TEST (59 REAL QUESTIONS)
-   (Built by combining all categories multiple times without nonsense)
+   BUILD 59 QUESTION TEST
 ========================= */
+
 let actualTest=[];
 Object.values(hardCategories).forEach(cat=>{
 cat.forEach(q=>actualTest.push(q));
 });
 while(actualTest.length<59){
-actualTest=actualTest.concat(actualTest);
+actualTest.push(...actualTest.slice(0,59-actualTest.length));
 }
-actualTest=actualTest.slice(0,59);
 
 /* ========================= */
 
@@ -164,11 +205,11 @@ function startFlash(){
 document.getElementById("home").style.display="none";
 document.getElementById("mode").style.display="block";
 document.getElementById("modeTitle").innerText="Flashcards";
-let content="";
-flashcards.forEach(card=>{
-content+=`<div class="option"><strong>${card.q}</strong><br>${card.a}</div>`;
+let html="";
+flashcards.forEach(f=>{
+html+=`<div class="option"><strong>${f.q}</strong><br>${f.a}</div>`;
 });
-document.getElementById("questionArea").innerHTML=content;
+document.getElementById("questionArea").innerHTML=html;
 document.getElementById("optionsArea").innerHTML="";
 document.getElementById("progress").innerText="";
 }
@@ -178,8 +219,8 @@ document.getElementById("home").style.display="none";
 document.getElementById("categoryMenu").style.display="block";
 }
 
-function startHardQuiz(category){
-currentSet=[...hardCategories[category]];
+function startHardQuiz(cat){
+currentSet=[...hardCategories[cat]];
 shuffle(currentSet);
 index=0;
 score=0;
@@ -196,7 +237,7 @@ index=0;
 score=0;
 document.getElementById("home").style.display="none";
 document.getElementById("mode").style.display="block";
-document.getElementById("modeTitle").innerText="Actual 59 Question Test";
+document.getElementById("modeTitle").innerText="Actual Test (59 Questions)";
 showQuestion(true);
 }
 
